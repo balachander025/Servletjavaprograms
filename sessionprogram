@@ -1,0 +1,84 @@
+package Advancedjavaprograms;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
+@WebServlet("/Sessionservlet")
+public class sesion extends HttpServlet {
+private static final long serialVersionUID = 1L;
+public sesion() {
+super();
+}
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+HttpSession session = request.getSession(true);
+ // Get session creation and last access time
+ Date createTime = new Date(session.getCreationTime());
+Date lastAccessTime = new Date(session.getLastAccessedTime());
+String title = "Welcome Back to My Website";
+Integer visitCount = 0;
+String visitCountKey = "visitCount";
+String userIDKey = "userID";
+String userID = "DEMI";
+if (session.isNew()) {
+title = "Welcome to My Website";
+session.setAttribute(userIDKey, userID);
+
+        } else {
+
+            visitCount = (Integer) session.getAttribute(visitCountKey);
+
+            if (visitCount == null) visitCount = 0;
+
+            visitCount += 1;
+
+            userID = (String) session.getAttribute(userIDKey);
+            }
+session.setAttribute(visitCountKey, visitCount);
+response.setContentType("text/html");
+PrintWriter out = response.getWriter();
+String docType = "<!DOCTYPE html>";
+out.println(docType + 
+
+            "<html><head><title>" + title + "</title></head>" +
+
+            "<body bgcolor=\"lightblue\">" +
+
+            "<h1 align=\"center\">" + title + "</h1>" +
+
+            "<h2 align=\"center\">Session Information</h2>" +
+
+            "<table border=\"1\" align=\"center\">" +
+
+            "<tr bgcolor=\"#949494\"><th>Session Info</th><th>Value</th></tr>" +
+
+            "<tr><td>ID</td><td>" + session.getId() + "</td></tr>" +
+
+            "<tr><td>Creation Time</td><td>" + createTime + "</td></tr>" +
+
+            "<tr><td>Last Access Time</td><td>" + lastAccessTime + "</td></tr>" +
+
+            "<tr><td>User ID</td><td>" + userID + "</td></tr>" +
+
+            "<tr><td>Number of Visits</td><td>" + visitCount + "</td></tr>" +
+
+            "</table></body></html>"
+
+        );
+
+    }
+ protected void doPost(HttpServletRequest request, HttpServletResponse response)
+
+            throws ServletException, IOException {
+
+        doGet(request, response);
+
+    }
+
+}
